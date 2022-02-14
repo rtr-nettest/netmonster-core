@@ -15,45 +15,45 @@ object BandTableNr {
     private const val SMALLEST_BANDWIDTH = 5_000 // kHz
 
     private val bands = arrayOf(
-        BandEntity(123_400..130_400, "600", 71),
-        BandEntity(143_400..145_600, "700", 29),
-        BandEntity(145_800..149_200, "700", 12),
-        BandEntity(151_600..160_600, "700", 28),
-        BandEntity(151_600..153_600, "700", 14),
-        BandEntity(158_200..164_200, "800", 20),
-        BandEntity(171_800..178_800, "850", 26),
-        BandEntity(172_000..175_000, "800", 18),
-        BandEntity(173_800..178_800, "850", 5),
-        BandEntity(185_000..192_000, "900", 8),
-        BandEntity(285_400..286_400, "1500", 51),
-        BandEntity(285_400..286_400, "1500", 76),
-        BandEntity(285_400..286_400, "1500", 93),
-        BandEntity(285_400..286_400, "1500", 91),
-        BandEntity(286_400..303_400, "1500", 50),
-        BandEntity(286_400..303_400, "1500", 75),
-        BandEntity(286_400..303_400, "1500", 92),
-        BandEntity(286_400..303_400, "1500", 94),
-        BandEntity(295_000..303_600, "1500", 74),
-        BandEntity(361_000..376_000, "1800", 3),
-        BandEntity(376_000..384_000, "1900", 39),
-        BandEntity(386_000..398_000, "1900", 2),
-        BandEntity(386_000..399_000, "1900", 25),
-        BandEntity(399_000..404_000, "2000", 70),
-        BandEntity(402_000..405_000, "2000", 34),
-        BandEntity(422_000..440_000, "2100", 66),
-        BandEntity(422_000..434_000, "2100", 1),
-        BandEntity(422_000..440_000, "2100", 65),
-        BandEntity(460_000..480_000, "2300", 40),
-        BandEntity(470_000..472_000, "2300", 30),
-        BandEntity(496_700..499_000, "2500", 53),
-        BandEntity(499_200..537_999, "2600", 41),
-        BandEntity(499_200..538_000, "2600", 90),
-        BandEntity(514_000..524_000, "2600", 38),
-        BandEntity(524_000..538_000, "2600", 7),
-        BandEntity(620_000..680_000, "3700", 77),
-        BandEntity(620_000..653_333, "3500", 78),
-        BandEntity(636_667..646_666, "3600", 48),
-        BandEntity(693_334..733_333, "4500", 79)
+        BandEntity(123_400..130_400, "600", 71,0),
+        BandEntity(143_400..145_600, "700", 29,0),
+        BandEntity(145_800..149_200, "700", 12,0),
+        BandEntity(151_600..160_600, "700", 28,1),
+        BandEntity(151_600..153_600, "700", 14,0),
+        BandEntity(158_200..164_200, "800", 20,1),
+        BandEntity(171_800..178_800, "850", 26,0),
+        BandEntity(172_000..175_000, "800", 18,0),
+        BandEntity(173_800..178_800, "850", 5,0),
+        BandEntity(185_000..192_000, "900", 8,1),
+        BandEntity(285_400..286_400, "1500", 51,0),
+        BandEntity(285_400..286_400, "1500", 76,0),
+        BandEntity(285_400..286_400, "1500", 93,0),
+        BandEntity(285_400..286_400, "1500", 91,0),
+        BandEntity(286_400..303_400, "1500", 50,0),
+        BandEntity(286_400..303_400, "1500", 75,0),
+        BandEntity(286_400..303_400, "1500", 92,0),
+        BandEntity(286_400..303_400, "1500", 94,0),
+        BandEntity(295_000..303_600, "1500", 74,0),
+        BandEntity(361_000..376_000, "1800", 3,1),
+        BandEntity(376_000..384_000, "1900", 39,0),
+        BandEntity(386_000..398_000, "1900", 2,0),
+        BandEntity(386_000..399_000, "1900", 25,0),
+        BandEntity(399_000..404_000, "2000", 70,0),
+        BandEntity(402_000..405_000, "2000", 34,0),
+        BandEntity(422_000..440_000, "2100", 66,0),
+        BandEntity(422_000..434_000, "2100", 1,1),
+        BandEntity(422_000..440_000, "2100", 65,0),
+        BandEntity(460_000..480_000, "2300", 40,0),
+        BandEntity(470_000..472_000, "2300", 30,0),
+        BandEntity(496_700..499_000, "2500", 53,0),
+        BandEntity(499_200..537_999, "2600", 41,0),
+        BandEntity(499_200..538_000, "2600", 90,0),
+        BandEntity(514_000..524_000, "2600", 38,0),
+        BandEntity(524_000..538_000, "2600", 7,0),
+        BandEntity(620_000..680_000, "3700", 77,0),
+        BandEntity(620_000..653_333, "3500", 78,1),
+        BandEntity(636_667..646_666, "3600", 48,0),
+        BandEntity(693_334..733_333, "4500", 79,0)
     )
 
     internal fun get(arfcn: Int, bandHints: IntArray = intArrayOf()): IBandEntity? {
@@ -65,6 +65,12 @@ object BandTableNr {
             candidates.isEmpty() -> return null
             candidates.size == 1 -> return candidates[0]
             else -> {
+                //return the candidate with highest priority, if priority has a unique highest candidate
+                val sortedCandidates = candidates.sortedByDescending { candidate -> candidate.priority }
+                if (sortedCandidates[0].priority != sortedCandidates[1].priority) {
+                    return sortedCandidates[0]
+                }
+
                 // Multiple bands can contain specified arfcn.
                 // Let's try find proper one using several small hacks.
                 val filtered = candidates.filter { candidate ->

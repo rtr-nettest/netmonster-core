@@ -24,10 +24,18 @@ interface IBandEntity{
      * In case of GSM this represents integer value of [name].
      */
     val number: Int?
+
+    /**
+     * Band priority used when bands overlap. the highest number has
+     * the highest priority, baseline is 0 [priority].
+     */
+    val priority: Int;
+
 }
 
 internal data class BandEntity(
     override val channelRange: IntRange,
     override val name: String,
-    override val number: Int?
+    override val number: Int?,
+    override val priority: Int = 0
 ) : IBandEntity
