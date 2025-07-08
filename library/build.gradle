@@ -28,6 +28,11 @@ android {
             useJUnitPlatform()
         }
     }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
     namespace 'cz.mroczis.netmonster.core'
 }
 
