@@ -149,8 +149,8 @@ internal class NetMonster(
         subId,
         DetectorHspaDc(),
         DetectorLteAdvancedNrServiceState(),
-        DetectorLteAdvancedPhysicalChannel(),
-        DetectorLteAdvancedCellInfo(),
+        // DetectorLteAdvancedPhysicalChannel(),
+        // DetectorLteAdvancedCellInfo(),
         DetectorAosp() // best to keep last when all other strategies fail
     ) ?: NetworkTypeTable.get(NetworkType.UNKNOWN)
 
